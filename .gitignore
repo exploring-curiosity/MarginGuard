@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.turbo/
+dist/
+.env
+.env.local
+.env.*.local
+*.tsbuildinfo
+.vercel
+.pulse-snapshots.json
+.DS_Store
+.claude/
+/hvac_construction_dataset
