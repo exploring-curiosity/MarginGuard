@@ -4,6 +4,14 @@ export const maxDuration = 300;
 
 const AGENT_URL = process.env.AGENT_API_URL || "http://localhost:3000/api/agent";
 
+function backendHeaders(): Record<string, string> {
+  const h: Record<string, string> = { "Content-Type": "application/json" };
+  if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
+    h["x-vercel-protection-bypass"] = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+  }
+  return h;
+}
+
 // The frontend AI SDK v6 sends UIMessage[] with { role, parts: [{ type: "text", text }] }
 // The backend agent expects the classic format: { role, content }
 // This proxy transforms between the two formats.
@@ -44,7 +52,7 @@ export async function POST(req: NextRequest) {
 
   const response = await fetch(AGENT_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: backendHeaders(),
     body: JSON.stringify({ messages, email: body.email }),
   });
 

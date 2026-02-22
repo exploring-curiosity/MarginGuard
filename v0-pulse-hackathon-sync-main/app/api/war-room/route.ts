@@ -4,10 +4,19 @@ const AGENT_BASE =
   process.env.AGENT_API_URL?.replace(/\/api\/agent$/, "") ||
   "http://localhost:3000";
 
+function backendHeaders(): Record<string, string> {
+  const h: Record<string, string> = { "Content-Type": "application/json" };
+  if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
+    h["x-vercel-protection-bypass"] = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+  }
+  return h;
+}
+
 export async function GET(_req: NextRequest) {
   try {
     const res = await fetch(`${AGENT_BASE}/api/war-room`, {
-      headers: { "Content-Type": "application/json" },
+      headers: backendHeaders(),
+      cache: "no-store",
     });
     if (!res.ok) {
       return new Response(
